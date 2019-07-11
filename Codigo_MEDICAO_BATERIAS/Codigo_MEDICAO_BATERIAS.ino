@@ -11,7 +11,7 @@
 #define Bateria_2   15      //A1
 #define Bateria_3   16      //A2
 #define Bateria_4   17      //A3
-#define CS          10      //D10
+#define CS          4       //D4
 #define MOSI        11      //D11
 #define MISO        12      //D12
 #define SCK         13      //D13
@@ -35,13 +35,13 @@ String LinhaDados = "";
 byte zero = 0x00;
 
 //Do relogio RTC
-  int segundo =0;
+  int segundo = 0;               //0~59
   int minuto = 0;                //0~59
   int hora = 0;                  //Formato 24 horas
   int diasemana = 0;             //0-6 -> Domingo - Sábado
-  int dia = 0;
-  int mes = 0;
-  int ano = 0;
+  int dia = 0;                   //Dependendo do mês, de 1~31
+  int mes = 0;                   //1~12
+  int ano = 0;                   //0~99
 
 //============================================== Funções ===========================================
 float LeituraBateria(int porta) {
@@ -162,7 +162,19 @@ void AtualizaRTC() {
    Wire.endTransmission();
 }
 
+void escreverCartao(String Dados) {
+  File ArquivoBaterias = SD.open("dadosbaterias.txt", FILE_WRITE);
 
+  if(ArquivoBaterias) {
+    ArquivoBaterias.println(Dados);
+    ArquivoBaterias.close();
+
+    Serial.println(Dados);
+  }
+  else {
+    Serial.println("Falha ao abrir arquivo.");
+  }
+}
 
 //============================================== Programa ==========================================
 void setup() {
@@ -176,11 +188,17 @@ void setup() {
   pinMode(2, OUTPUT);
 
                                     
-//  while(!SD.begin(SelecaoChip)) {
-//     Serial.println("Erro, cartão de memória não inserido.");
-//     delay(1500);
-//  }
-//  Serial.println("Cartão encontrado.");
+  while(!SD.begin(SelecaoChip)) {
+     Serial.println("Erro, cartão de memória não inserido.");
+     Serial.println("Reconectando");
+     delay(500);
+     Serial.print(".");
+     delay(500);
+     Serial.print(".");
+     delay(500);
+     Serial.print(".");     
+  }
+  Serial.println("Cartão encontrado.");
 }
 
 void loop() {
@@ -188,5 +206,3 @@ void loop() {
   digitalWrite(13, !digitalRead(13));
   delay(500);
 }
-
-
