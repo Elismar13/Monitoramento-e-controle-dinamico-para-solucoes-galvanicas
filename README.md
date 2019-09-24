@@ -1,8 +1,17 @@
 <html>
   <head><h1>Monitoramento e controle dinâmico de soluções eletroquímicas</h1></head>
  <body>
-    <p>Sistema para medir e escrever dados em um cartão SD. Desenvolvido no laboratório LATOMIA - IFPB.<\p>
-      
+    <p>Sistema para medir e escrever dados em um cartão SD. Desenvolvido no laboratório LATOMIA - IFPB.</p>
+
+Sistema para medir a diferença de potencial de soluções eletroquímicas, mostrar ao usuário a medição em tempo real e salvar dados em um cartão SD para uma análise posterior. Desenvolvido no Laboratório de Tecnologia Orientadas à Manufatura Industrial Avançada (LATOMIA), do Instituto Federal da Paraíba. 
+
+Créditos:
+  *Arduino IDE
+  *SD Library: https://github.com/arduino-libraries/SD
+  *LiquidCrystal Library: https://github.com/arduino-libraries/LiquidCrystal 
+  
+  
+        
     The MIT License (MIT)
 
     Copyright (c) 2019 Elismar Silva Pereira
@@ -23,5 +32,4 @@
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Sistema para medir diferença de potencial de soluções eletroquímicas, mostrar ao usuário e salvar dados em um cartão SD para uma análise posterior. Laboratório de Tecnologia Orientadas à Manufatura Industrial Avançada (LATOMIA), no Instituto Federal da Paraíba. 
+</body>
