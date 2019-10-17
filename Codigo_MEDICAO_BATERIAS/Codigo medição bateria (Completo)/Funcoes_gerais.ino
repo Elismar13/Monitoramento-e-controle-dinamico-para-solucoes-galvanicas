@@ -11,7 +11,7 @@ float LeituraBateria(int porta) {
   }
   tensao = float(media)/Amostras_Filtro;
   tensao = tensao*TensaoADC/1023;
-  return tensao;  
+  return tensao + offset;  
 }
 
 //Função "link" para os níveis das baterias 
@@ -25,34 +25,38 @@ void NiveisBaterias() {
 //Função para ler os dados e criar um String
 void leituraEscrita() {
   /*              PADRÃO DA ESCRITA 
-   *  0.000V, 0.000V, 0.000V, 0.000V - 00/00/0000 00:00:00
+   *  Vbat1  Vbat2  Vbat3  Vbat4 Dia  Mes  Ano  Hora Min  Seg
+   *  0.000, 0.000, 0.000, 0.000, 00, 00, 0000, 00,  00,  00
    */
    
   NiveisBaterias();
   String LinhaDados = "";
-
+  LinhaDados += "-";
   LinhaDados += String(Bateria1, 3);
-  LinhaDados += "V, ";
+  LinhaDados += ",";
+  LinhaDados += "-";
   LinhaDados += String(Bateria2, 3);
-  LinhaDados += "V, ";
+  LinhaDados += ",";
+  LinhaDados += "-";
   LinhaDados += String(Bateria3, 3);
-  LinhaDados += "V, ";
+  LinhaDados += ",";
+  LinhaDados += "-";
   LinhaDados += String(Bateria4, 3);
-  LinhaDados += "V - ";
+  LinhaDados += ",";
 
   //Dia
   if(dia < 10) {
     LinhaDados += '0';     //Se o dia for menor que 10, adiciono um zero à frente.
   }
   LinhaDados += String(dia);
-  LinhaDados += "/";
+  LinhaDados += ",";
 
   //Mês
   if(mes < 10) {
     LinhaDados += '0';     //Se o mes for menor que 10, adiciono um zero à frente.
   }
   LinhaDados += String(mes);
-  LinhaDados += "/";
+  LinhaDados += ",";
 
   //Ano
   LinhaDados += "20";
@@ -60,27 +64,28 @@ void leituraEscrita() {
     LinhaDados += '0';     //Se o ano for menor que 10, adiciono um zero à frente.
   }
   LinhaDados += String(ano);
-  LinhaDados += " ";
+  LinhaDados += ",";
 
-  //Hora
+  //Hora  15
   if(hora < 10) {
     LinhaDados += '0';    //Se a hora for menor que 10, adiciono um zero à frente
   }
   LinhaDados += String(hora);
-  LinhaDados += ":";
+  LinhaDados += ",";
 
   //Minuto
   if(minuto < 10) {
     LinhaDados += '0';  //Se o minuto for menor que 10, adiciono um zero à frente
   }
   LinhaDados += String(minuto);
-  LinhaDados += ":";
+  LinhaDados += ",";
 
   //Segundo
   if(segundo < 10) {
     LinhaDados += '0'; //Se o segundo for menor que 10, adiciono um zero à frente
   }
   LinhaDados += String(segundo);
+  LinhaDados += ',';
 
   /*     DEBUG  
   Serial.println(LinhaDados);
@@ -98,8 +103,9 @@ void leituraEscrita() {
     delay(1000);
   }
 
+  
   //Salvando o arquivo
-  File dataFile = SD.open("dados.txt", FILE_WRITE);
+  File dataFile = SD.open("dados.csv", FILE_WRITE);
 
   if(dataFile) {             //Se tudo estiver configurado com o cartão
     dataFile.println(LinhaDados); //Escrevo a linha com os dados
@@ -110,7 +116,9 @@ void leituraEscrita() {
     erroGeral();
   }
   delay(1200);
+  
 }
+
 
 //Conversões necessárias para leitura e escrita no relógio RTC
 byte decToBcd(byte valor) {

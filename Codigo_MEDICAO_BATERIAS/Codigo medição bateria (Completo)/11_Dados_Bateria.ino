@@ -75,6 +75,9 @@ void statusBat(float NivelBateria, int ValorBat) {
       }
      lcd.write(':');
 
+     //Sinal de menos
+     lcd.setCursor(4, 1);
+     lcd.write('-');
 
    //Mostrar o valor da bateria em VOLTS 
     lcd.setCursor(5, 1);

@@ -304,25 +304,26 @@ void mostrarHora() {
 
 //Função para calibrar o ADC
 void calibracao() {
+  float offset_Calibrado = 0;     //Variável auxiliar para mostrar o offset no display
   CalibracaoADC = EEPROM.read(EnderecoCalibracao);
+  //CalibracaoADC = 20;
   
   while (true) {
     lcd.clear();
   
     //"Constante de calibracao: XX.XX"
+    offset_Calibrado = 0;
     lcd.setCursor(2, 0);
-    lcd.write('C');
-    lcd.write('o');
-    lcd.write('n');
+    lcd.write('O');
+    lcd.write('f');
+    lcd.write('f');
     lcd.write('s');
-    lcd.write('t');
-    lcd.write('a');
-    lcd.write('n');
-    lcd.write('t');
     lcd.write('e');
+    lcd.write('t');
     lcd.write(' ');
     lcd.write('d');
     lcd.write('e');
+    //lcd.print(CalibracaoADC);
   
     lcd.setCursor(0, 1);
     lcd.write('c');
@@ -336,9 +337,23 @@ void calibracao() {
     lcd.write((byte)4);
     lcd.write('o');
     lcd.write(':');
-    lcd.write(' ');
-      
-    lcd.print(CalibracaoADC-20);
+    if(CalibracaoADC >= 20) lcd.write(' ');
+     
+    if(CalibracaoADC < 20) {
+      for(byte i = CalibracaoADC; i < 20; i++) {
+        offset_Calibrado -= 0.01;
+      }
+    }
+    else if (CalibracaoADC > 20) {
+      for(byte i = 21; i <= CalibracaoADC; i++) {
+        offset_Calibrado += 0.01;
+      }
+    }
+    else {
+      offset_Calibrado = 0.00f;
+    }
+    
+    lcd.print(offset_Calibrado); 
   
     //Leitura botoes 
     if(!digitalRead(mais) == HIGH) {
@@ -364,7 +379,7 @@ void calibracao() {
     }
     else if(CalibracaoADC > 40) {
       CalibracaoADC = 0;
-      }
+     }
 
     delay(AtualizacaoDisplay);
   }
@@ -374,12 +389,16 @@ void calibracao() {
   if(CalibracaoADC != 20) {
     for(byte i = 0; i<(abs(CalibracaoADC-20)); i++) {
       if(CalibracaoADC < 20) {
-        TensaoADC += 0.001;
+        offset += 0.01;
+      }
+      else if (CalibracaoADC > 20) {
+       offset -= 0.01;
       }
       else {
-        TensaoADC -= 0.001;
+        offset = 0.0f;
       }
     }
+    offset = offset_Calibrado;
   }
   EEPROM.update(EnderecoCalibracao, CalibracaoADC);
   salvoComSucesso();

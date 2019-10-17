@@ -9,8 +9,8 @@
 //============================================= HARDWARE =============================================
 //Constantes
 #define DS1307_ADDRESS      0x68
-#define AtualizacaoDisplay  120
-#define AtrasoBotoes        300
+#define AtualizacaoDisplay  100
+#define AtrasoBotoes        190
 #define EnderecoTempoSalvar 0
 #define EnderecoCalibracao  1
 
@@ -95,6 +95,7 @@ const byte SelecionadorOpcao[8] =                 //Lista para o caractere espec
     0b01111,
     0b00000
   };
+  
 //Seletores para os menus
 byte SeletorPrincipal = 0;
 byte SeletorDadosBateria = 1;
@@ -108,7 +109,8 @@ byte TempoParaSalvar = 1;
 
 //Calibracao do filtro ADC
 byte CalibracaoADC = 20;    //de 0 à 40. 20 Seria é o equivalente de '0' 
-float TensaoADC = 5.00;
+const float TensaoADC = 5.00f;
+float offset = 0.00f;
 
 //Número de amostras para o filtro ADC. Quanto maior, melhor, mas terá impacto no desempenho do sistema.
 byte Amostras_Filtro = 30;
@@ -118,7 +120,7 @@ float Bateria1 = 0.00f;
 float Bateria2 = 0.00f;
 float Bateria3 = 0.00f;
 float Bateria4 = 0.00f;
-float Teste[20] = {0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f};
+//float Teste[20] = {0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f, 0.00f};
 
 
 //Do relogio RTC
@@ -165,7 +167,7 @@ void setup() {
   lcd.print("Iniciando");
   for(byte i = 0; i < 3; i++) {
     lcd.write('.');
-    delay(1500);
+    delay(1);
   }
 
   //Verifico e atualizo o tempo
@@ -174,29 +176,31 @@ void setup() {
     EEPROM.update(EnderecoTempoSalvar, 1); 
   }
   TempoParaSalvar = EEPROM.read(EnderecoTempoSalvar);
-  
+
+
   //Enquanto o cartão não for inserido eu mostro o erro                     
   while(!SD.begin(SelecaoChip)) {
      erroAbrirCartao();
   }
+  
   //Se for encontrado:
   lcd.clear();
   lcd.setCursor(3, 0);
   lcd.print("Cartao SD ");
   lcd.setCursor(2, 1);
   lcd.print("encontrado.");  
-  delay(2000);
+  delay(50);
 
 
   //Verifico e atualizo a calibracao
-  CalibracaoADC = EEPROM.read(EnderecoCalibracao);
+  //CalibracaoADC = EEPROM.read(EnderecoCalibracao);
   if(CalibracaoADC != 20) {
     for(byte i = 0; i < (abs(CalibracaoADC-20)); i++) {
       if(CalibracaoADC > 20) {
-        TensaoADC += 0.001;
+        offset += 0.001;
       }
       else {
-        TensaoADC -= 0.001;
+        offset -= 0.001;
       }
     }
   }
