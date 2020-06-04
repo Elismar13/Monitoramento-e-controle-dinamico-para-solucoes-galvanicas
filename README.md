@@ -7,7 +7,7 @@
 
 Sistema para medir a diferença de potencial de soluções eletroquímicas, mostrar ao usuário a medição em tempo real e salvar dados em um cartão SD para uma análise posterior. Desenvolvido no Laboratório de Tecnologia Orientadas à Manufatura Industrial Avançada (LATOMIA), do Instituto Federal da Paraíba. 
 
-**:wrench: Tecnologias:
+## :wrench: Tecnologias:
 
   - [Arduino IDE](https://www.arduino.cc/)
   
